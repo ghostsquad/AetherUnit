@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PoshUnitTestAttribute.cs" />
+    <Compile Include="SetupAttribute.cs" />
+    <Compile Include="TeardownAttribute.cs" />
+    <Compile Include="TestAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -48,9 +50,9 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-	<CreateItem Include="$(OutputPath)\**\*.*">
-        <Output TaskParameter="Include" ItemName="MyDllFiles"/>
+    <CreateItem Include="$(OutputPath)\**\*.*">
+      <Output TaskParameter="Include" ItemName="MyDllFiles" />
     </CreateItem>
-	<Copy SourceFiles="@(MyDllFiles)" DestinationFolder="$(ProjectDir).." ContinueOnError="false" />
+    <Copy SourceFiles="@(MyDllFiles)" DestinationFolder="$(ProjectDir).." ContinueOnError="false" />
   </Target>
 </Project>
