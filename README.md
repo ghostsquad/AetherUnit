@@ -1,6 +1,6 @@
 # PoshUnit
 
-<img src="https://raw.githubusercontent.com/ghostsquad/PoshUnit/dev/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PoshUnit" style="float: right" />
+<img src="https://raw.githubusercontent.com/ghostsquad/PoshUnit/readme/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PoshUnit" style="float: right" />
 
 PoshUnit is a Powershell unit test framework. Here are the core concepts that make PoshUnit stand out from the crowd. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell.
 
