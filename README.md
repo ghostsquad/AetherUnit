@@ -4,16 +4,162 @@
 
 PoshUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PoshUnit stand out from the crowd:
 
-1. **Test Isolation** - Tests are run in complete isolation from each other. Like in XUnit, the fixture is recreated once per test. 
-2. **Setup and Teardown** - Although normally, I would agree that setup/teardown methods make the code harder to understand, if done correctly, it can save a lot of time and keep code DRY. XUnit states that the constructor/dispose methods of the test class can be used like setup/teardown.
-3. **Fluent Assertions w/ nice messages** - [Fluent Assertions](https://github.com/dennisdoomen/fluentassertions) makes debugging easier with cleaner messages. No more vague messages like "expected false, but was true".
-4. **Test Attributes** - Organize, Control, and Extend the functionality of tests using attributes
+* **Test Isolation** - Tests are run in complete isolation from each other. Like in XUnit, the fixture is recreated once per test.
+* **Test Attributes** - Organize, Control, and Extend the functionality of tests using attributes
   * Explicit Tests (NUnit [explanation](http://www.nunit.org/index.php?p=explicit&r=2.2.10))
   * Skip Tests (XUnit)
   * Test Extension Attribute Examples [here](http://callumhibbert.blogspot.com/2008_01_01_archive.html) and [here](http://www.dotnetguy.co.uk/post/2010/04/01/xunit-freezeclock-black-magic-stopping-time/)
-5. **Hierarchical Organization** - Organize tests like you would in C# by Project, Namespace, Class, TestName
-6. **Tab Expansion** - Built-In tab expansion for finding tests by name/attribute
-7. **Clear, Consistent Naming** - Built-In support for BDD naming syntax.
-8. **Clean, Detailed Output** - result, runtime, standard output, trace, etc. Data is stored in a global variable to use/analyze as needed, as well as to the console and results JSON file.
-9. **Mocking DI Style** - Pester, PSUnit and others have focused on allowing developers to mock out function calls, like Get-ChildItem within the SUT (System under test). This seems like a good idea at first, but quickly, you'll realize that you have no guarantee that when you run your test, you will call the actual function or the mocked function, or if that function is even being used anymore. You end up breaking the first rule of testing, which is that you should not know about implementation details. Those may change, but you tests shouldn't (as long as the behavior remains the same).
-10. **AutoMockTestable Pattern** - Don't inject dependencies that aren't related to your test. Let the AutoMock container handle that!
+* **Hierarchical Organization** - Organize tests like you would in C# by Project, Namespace, Class, TestName
+* **Test Sessions** - Select specific tests to be run using a test-session, rerunning a test-session only runs the tests you've selected. If you've selected a fixture, all tests within the fixture will be run, including new ones that you've added since last run.
+* **Test Search** - Find tests by name, attribute with builtin in tab-completion!
+* **Clean, Detailed Output** - result, runtime, standard output, trace, etc. Data is stored in a global variable to use/analyze as needed, as well as to the console and results JSON file.
+* **Per Test & Per Fixture Setup and Teardown** - I agree that setup/teardown methods make a test harder to understand, and explicit calls to helper methods would keep tests clear. Regardless, I'm not everyone, and I thought it would be useful to support Per Test & Per Fixture setup & teardown like other frameworks.
+
+### Complementary Modules
+
+* [**PSFluentAssertions**](http://github.com/ghostsquad/PSFluentAssertions) - A PowerShell adaptation of the [.NET FluentAssertions library](http://www.fluentassertions.com/).
+
+* [**PSClass & PSClassMock**](http://github.com/ghostsquad/PSClass) - Write code & test it faster, and with greater confidence.
+
+* [**PSMoq**](http://github.com/ghostsquad/PSMoq) - A PowerShell adaptation of the [.Net Moq library](https://github.com/Moq/moq4).
+
+* [**PSAutofixture**](http://github.com/ghostsquad/PSAutoFixture) - A PowerShell adaptation of the [.Net Autofixture library](https://github.com/AutoFixture/AutoFixture).
+
+### Design Notes & Restrictions
+
+* Variables outside of the Fixture are not accessible unless they are in the Global scope.
+
+* The script invocation information is stored in an autovariable $TestInvocationInfo. This may be needed to resolve paths to other scripts/files when the test is run.
+
+* The Fixture, Fact, and Theory methods simply define the test definition. Nothing is actually run without using Invoke-PoshUnit. This differs from popular testing framework Pester,
+but offers some powerful capabilities.
+
+
+### Examples
+
+```Powershell
+$RepeatCustomization = New-TestCustomization {
+    param(
+        [scriptblock]$testDefinition
+    )
+
+    $repeatCount = $args[0]
+
+    # make sure to return an array ALWAYS
+    $TestScripts = @()
+
+    # this simply runs the test multiple times using the repeatCount arg
+    for($i = 0; $i -lt $repeatCount; $i++) {
+        [Void]$TestScripts.Add($testDefinition)
+    }
+
+    # using the comma trick, this will ensure that an actual array is returned
+    # even if there are 1 or no elements in the array
+    return ,$TestScripts
+}
+
+$o = New-Object PSObject
+$o
+
+PoshUnitFixture 'FooFixture' {
+
+    FixtureNote myVar
+    FixtureNote propertyDataSource
+    FixtureNote tellUsBefore
+
+    Setup {
+        $this.tellUsBefore = { write-host 'before test' }
+        $this.propertyDataSource = @(
+            @('paramA-1', 'paramB-1'),
+            @('paramA-2', 'paramB-2')
+        )
+
+        $this.myVar = 'foo'
+    }
+
+    Fact 'VanillaTest' {
+        param()
+    }
+
+    Fact 'SkippedFact' {
+        [Skip("This Test Sucks")]
+        param()
+    }
+
+    Fact 'Fact with max runtime of 50 ms' {
+        [Timeout(50)]
+        param()
+    }
+
+    Fact 'CustomBeforeScript' {
+        [Before({ write-host 'before test' })]
+        param()
+    }
+
+    Fact 'CustomBeforeScript2' {
+        #TellUsBefore really points to $this.TellUsBefore
+        [Before('TellUsBefore')]
+        param()
+    }
+
+    Fact 'CustomAfterScript' {
+        [After({ write-host 'after test' })]
+        param()
+    }
+
+    Fact 'CustomAttribute' {
+        [TestCustomization($this.RepeatCustomization, 5)]
+        param()
+    }
+
+    # You should have only 1 of these per fixture
+    UseFixtureDataObject {
+        $o = (new-object psobject)
+        Attach-PSScriptMethod $o GetHelloMessage {
+            return 'hello world'
+        }
+        #this scriptblock should return an object
+        return
+    }
+
+    Fact 'UsingFixtureDataObjectInSomeWay' {
+        $myMessage = $this.FixtureDataObject.GetHelloMessage()
+        # .. do more stuff
+    }
+
+    # This generates 1 test per item in the collection provided, in this case, 2 tests
+    # note the datasource must be a collection of collections
+    # the outer collection is the number of test cases to generate
+    # the inner collection is the ordered parameter values
+    # further collections inside are not unrolled, and will be passed as a parameter
+    Theory 'VariableDataTheory' {
+        [VariableDataSource('propertyDataSource')]
+        param($a, $b)
+    }
+
+    # This generates 2 test cases
+    Theory 'InlineDataTheories' {
+        [InlineData('value1', 'value2')]
+        [InlineData('value3', 'value4')]
+        param($a, $b)
+    }
+
+    # The Following Examples Require PSAutoFixture
+    Fact 'GivenFooExpectBar' {
+        [AutoData]
+        param([string]$a, [int]$b)
+    }
+
+    Fact 'GivenFooExpectBar' {
+        [AutoPSClassData('MyAnimalClass')]
+        param([psobject]$a)
+    }
+
+    Fact 'GivenFooExpectBar' {
+        [AutoMixedData('MyAnimalClass')]
+        param([psobject]$a, [string]$b, [int]$c)
+    }
+}
+
+```
+
