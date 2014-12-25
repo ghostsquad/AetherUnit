@@ -10,6 +10,12 @@
             this.CallValues = callValues;
         }
 
+        public TestCustomizationAttribute(string customizationName, params object[] callValues)
+        {
+            this.Command = TestCustomizations.Custumizations[customizationName];
+            this.CallValues = callValues;
+        }
+
         #endregion
 
         #region Public Properties

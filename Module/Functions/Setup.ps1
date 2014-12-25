@@ -4,7 +4,9 @@ function Setup {
         [scriptblock]$Definition
     )
 
-    $Fixture = GetParentFixture -DataType 'Setup'
+    throw (New-Object System.NotImplementedException)
 
-    $Fixture.Setup = $Definition
+    #$Fixture = GetParentFixture -DataType 'Setup'
+
+    #$Fixture.Setup = $Definition
 }

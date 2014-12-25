@@ -8,6 +8,10 @@
             : base(command, callValues) {
         }
 
+        public BeforeAttribute(string customizationName, params object[] callValues)
+            : base(customizationName, callValues) {
+        }
+
         #endregion
     }
 }

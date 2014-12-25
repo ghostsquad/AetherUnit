@@ -5,7 +5,9 @@ function Fact {
         [scriptblock]$Definition
     )
 
-    $Fixture = GetParentFixture -DataType 'Fact'
+    throw (New-Object System.NotImplementedException)
 
-    AddTestObjectToState $Fixture $Name $Definition
+    #$Fixture = GetParentFixture -DataType 'Fact'
+
+    #AddTestObjectToState $Fixture $Name $Definition
 }

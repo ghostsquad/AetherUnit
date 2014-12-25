@@ -1,10 +1,9 @@
 New-PSClass 'PoshUnit.FixtureMeta' {
     note Name
-    note Tests (New-Object System.Collections.Generic.Queue[object])
+    note Tests (New-Object System.Collections.ArrayList)
     note Setup {}
     note Teardown {}
     note LazyDataObject (New-Lazy { return $null })
-    note Notes (New-Object System.Collections.ArrayList)
 
     constructor {
         param(

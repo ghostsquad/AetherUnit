@@ -1,3 +1,11 @@
 New-PSClass 'PoshUnit.TestSession' {
-    note 'FixtureMetas' (new-object System.Collections.Queue[object])
+    Note Tests (New-Object System.Collections.ArrayList)
+    Note SessionId
+    constructor {
+        param(
+            [int]$SessionId
+        )
+
+        $this.SessionId = $SessionId
+    }
 }

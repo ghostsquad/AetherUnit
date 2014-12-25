@@ -4,7 +4,9 @@ function Teardown {
         [scriptblock]$Definition
     )
 
-    $Fixture = GetParentFixture -DataType 'Teardown'
+    throw (New-Object System.NotImplementedException)
 
-    $Fixture.Teardown = $Definition
+    #$Fixture = GetParentFixture -DataType 'Teardown'
+
+    #$Fixture.Teardown = $Definition
 }
