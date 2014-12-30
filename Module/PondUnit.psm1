@@ -6,6 +6,7 @@ $PondUnitModuleBuilder = New-DynamicModuleBuilder 'PondUnit'
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Add-Type -Path $here\PondUnit.dll
+Add-Type -Path $here\Dependencies\xunit.dll
 
 . $here\TestResult.ps1
 . $here\FailureReason.ps1
@@ -36,6 +37,10 @@ foreach($psClassName in $psClassesToSource) {
     if(-not (Get-PSClass "PondUnit.$psClassName")) {
         . ('{0}\PSClasses\{1}.ps1' -f $here, $psClassName)
     }
+}
+
+foreach($assert in (get-childitem $here\Asserts)) {
+    . $assert.FullName
 }
 
 Add-TypeAccelerator -Name StringConstantExpressionAst -Type ([System.Management.Automation.Language.StringConstantExpressionAst])
