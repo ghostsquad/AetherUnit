@@ -113,7 +113,8 @@ function Get-TestFixtures {
 
     while($filesEnumerator.MoveNext()) {
         $parseErrors = $null
-        $testFileAst = [System.Management.Automation.Language.Parser]::ParseFile($filesEnumerator.Current, [ref]$null, [ref]$parseErrors)
+        $fixtureFilePath = $filesEnumerator.Current
+        $testFileAst = [System.Management.Automation.Language.Parser]::ParseFile($fixtureFilePath, [ref]$null, [ref]$parseErrors)
         if ($parseErrors.Length -gt 0) {
             $msg = "Parse Errors: {0}" -f ([string]::Join("`n", $parseErrors))
             throw (New-Object PondUnitException($msg))
@@ -133,7 +134,7 @@ function Get-TestFixtures {
                 throw (New-Object PondUnitException($msg))
             }
 
-            $testFixture = (Get-PSClass 'PondUnit.TestFixture').New($fixtureName)
+            $testFixture = (Get-PSClass 'PondUnit.TestFixture').New($fixtureName, $fixtureFilePath)
 
             $setupAst = GetCommandAsts $fixtureDefinitionAst 'Setup'
             if($setupAst -ne $null) {
@@ -151,6 +152,13 @@ function Get-TestFixtures {
             if($useDataFixtureAst -ne $null) {
                 $useDataFixtureParams = GetParamValues $useDataFixtureAst -DefinitionOnly
                 $testFixture.LazyDataObject = New-Lazy { $useDataFixtureParams['Definition'] }
+            }
+
+            $factsAsts = GetCommandAsts $fixtureDefinitionAst @('Fact')
+            foreach($testAst in $factsAsts) {
+                $testParams = GetParamValues $testAst
+                $testCase = (Get-PSClass 'PondUnit.TestCase').New($testParams['Name'], $testParams['Definition'], $testFixture)
+                [Void]$testFixture.Tests.Add($testCase)
             }
 
             $factsAndTheoriesAsts = GetCommandAsts $fixtureDefinitionAst @('Fact', 'Theory')

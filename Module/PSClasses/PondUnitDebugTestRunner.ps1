@@ -9,11 +9,11 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
         $private:testFixture = $testFixture
         $private:testCase = $testCase
 
-        $TestName = $testCase.DisplayName
+        $private:testName = $testCase.DisplayName
 
         try {
             $testCase.Result = [PondUnit.TestResult]::InProgress
-            [Void]$testFixture.$TestName.Invoke()
+            [Void]$testFixture.$testName.Invoke()
             $testCase.Result = [PondUnit.TestResult]::Success
         } catch {
             write-host 'test failed' -foregroundcolor yellow
@@ -40,10 +40,10 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
                 $testCases = $testGroup.Values
 
                 try {
-                    # since all test cases share the same fixtureMeta object, we can just pick the first one
-                    # and create the test fixture (psclass) using the FixtureMeta property of the testCase
+                    # since all test cases share the same TestFixture object, we can just pick the first one
+                    # and create the test fixture class (psclass) using the TestFixture property of the testCase
                     $firstTestCase = [System.Linq.Enumerable]::First($testCases)
-                    $fixtureClass = CreateFixtureClassFromMeta $firstTestCase.FixtureMeta
+                    $fixtureClass = CreatePSClassFromTestFixture $firstTestCase.TestFixture
                     $initSuccessful = $true
                 } catch {
                     # if we are unable to create the testClass, mark all tests as failed
@@ -96,7 +96,7 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
                 }
             } finally {
                 # Cleanup the references to the fixture psClass
-                if((test-path variable:fixtureClass) -and $fixtureClass -ne $null) {
+                if($fixtureClass -ne $null) {
                     $Global:__PSClassDefinitions__.Remove($fixtureClass.__ClassName)
                 }
             }

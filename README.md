@@ -31,7 +31,7 @@ PondUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent A
 
 * Variables outside of the Fixture are not accessible unless they are in the Global scope.
 
-* The script invocation information is stored in an autovariable $TestInvocationInfo. This may be needed to resolve paths to other scripts/files when the test is run.
+* The script invocation information is stored in an automatic fixture variable accessible within any fixture method using $this.__TestInvocationInfo. This may be needed to resolve paths to other scripts/files when the test is run.
 
 * The methods used to define the aspects of a test fixture are simply "markers", and are never actually invoked. The PowerShell AST is used to discover and build test fixtures.
 This differs from popular testing framework Pester, but offers some powerful capabilities. _Important:_ Any code outside inside of PondUnitFixture and outside of Fact/Theory/Setup/Teardown/UseDataFixture will never run.

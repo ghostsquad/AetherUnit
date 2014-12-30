@@ -18,21 +18,21 @@ New-PSClass 'PondUnit.TestCase' {
     note FailureReason
 
     # PSClass [PondUnit.Fixture]
-    note FixtureMeta
+    note TestFixture
 
     constructor {
         param(
             [string]$DisplayName,
             [scriptblock]$Definition,
-            $FixtureMeta
+            $TestFixture
         )
 
         Guard-ArgumentNotNull 'DisplayName' $DisplayName
         Guard-ArgumentNotNull 'Definition' $Definition
-        Guard-ArgumentNotNull 'FixtureMeta' $FixtureMeta
+        Guard-ArgumentIsPSClass 'TestFixture' $TestFixture 'PondUnit.TestFixture'
 
         $this.DisplayName = $DisplayName
         $this.Definition = $Definition
-        $this.FixtureMeta = $FixtureMeta
+        $this.TestFixture = $TestFixture
     }
 }

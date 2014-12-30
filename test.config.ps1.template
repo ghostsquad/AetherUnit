@@ -1,0 +1,6 @@
+#because this module may require other modules that may not be installed in the standard
+#modulepath, in order for tests to run, we can temporarily append to the module path
+#so that the required nested modules can be found and imported.
+#copy this file and name it test.config.ps1 in order to enable it
+#example:
+#$env:PSModulePath += 'c:\dev'
