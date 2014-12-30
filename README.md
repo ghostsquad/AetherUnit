@@ -1,6 +1,6 @@
 # PondUnit
 
-<img src="https://raw.githubusercontent.com/ghostsquad/PoshUnit/readme/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PoshUnit" align="right" />
+<img src="https://raw.githubusercontent.com/ghostsquad/PondUnit/master/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PondUnit" align="right" />
 
 PondUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PondUnit stand out from the crowd:
 
