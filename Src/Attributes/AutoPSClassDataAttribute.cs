@@ -1,6 +1,4 @@
-﻿namespace PoshUnit {
-    using System.Management.Automation;
-
+﻿namespace PondUnit.Attributes {
     public class AutoPSClassDataAttribute : DataAttribute {
         #region Constructors and Destructors
 

@@ -30,7 +30,7 @@ function Get-TestFixtures {
 
         $predicate = New-Closure @newClosureParams
 
-        return $ScriptBlockAst.FindAll($predicate, $true)
+        return ,$ScriptBlockAst.FindAll($predicate, $true)
     }
 
     function GetParamValues {
@@ -39,7 +39,7 @@ function Get-TestFixtures {
             [Switch]$DefinitionOnly
         )
 
-        $ParamNameAstTypeDictionary = (New-Object System.Collections.Specialized.OrderedDictionary)
+        $ParamNameAstTypeDictionary = (New-Object System.Collections.Specialized.OrderedDictionary([System.StringComparer]::OrdinalIgnoreCase))
 
         if(-not $DefinitionOnly) {
             [Void]$ParamNameAstTypeDictionary.Add('Name', ([StringConstantExpressionAst]))
@@ -80,26 +80,27 @@ function Get-TestFixtures {
                 -and $element -is $ParamNameAstTypeDictionary.Item($ParamNameAstTypeDictionaryIndex) `
                 -and -not ($CommandAst.CommandElements[$i - 1] -is [CommandParameterAst])) {
 
-                $Key = $ParamNameAstTypeDictionary.GetKey($i)
-                $ParamsDictionary[$Key] = $element.Value
+                $Key = ([string[]]$ParamNameAstTypeDictionary.Keys)[$ParamNameAstTypeDictionaryIndex]
+                if($element -is [StringConstantExpressionAst]) {
+                    $ParamsDictionary[$Key] = $element.Value
+                } else {
+                    $ParamsDictionary[$Key] = [scriptblock]::Create($element.ToString())
+                }
             }
         }
 
         $ParamNameAstTypeDictionaryEnumerator = $ParamNameAstTypeDictionary.GetEnumerator()
 
-        $parameterPosition = 0
-        while($ParamNameAstTypeDictionaryEnumerator.MoveNext()) {
-            $Key = $ParamNameAstTypeDictionaryEnumerator.Current.Name
+        for($i = 0; $i -lt $ParamNameAstTypeDictionary.Count; $i++) {
+            $Key = ([string[]]$ParamNameAstTypeDictionary.Keys)[$i]
             if(-not $ParamsDictionary.ContainsKey($Key) -or $ParamsDictionary[$Key] -eq $null) {
                 $msg = [string]::Format("Parse Error: Command [{0}] does not have necessary parameter [{1}] named or at position {2}. Extent: `n{3}",
                     $CommandName,
                     $Key,
-                    $parameterPosition,
+                    $i,
                     $CommandAst.Extent)
                 throw (New-Object PoshUnitException($msg))
             }
-
-            $parameterPosition++
         }
 
         return $ParamsDictionary
@@ -132,24 +133,30 @@ function Get-TestFixtures {
                 throw (New-Object PoshUnitException($msg))
             }
 
-            $fixtureMeta = [PSClassContainer]::ClassDefinitions['PoshUnit.FixtureMeta'].New($fixtureName)
+            $fixtureMeta = (Get-PSClass 'PoshUnit.FixtureMeta').New($fixtureName)
 
             $setupAst = GetCommandAsts $fixtureDefinitionAst 'Setup'
-            $setupParams = GetParamValues $setupAst -DefinitionOnly
-            $fixtureMeta.Setup = $setupParams['Definition']
+            if($setupAst -ne $null) {
+                $setupParams = GetParamValues $setupAst -DefinitionOnly
+                $fixtureMeta.Setup = $setupParams['Definition']
+            }
 
             $teardownAst = GetCommandAsts $fixtureDefinitionAst 'Teardown'
-            $teardownParams = GetParamValues $teardownAst -DefinitionOnly
-            $fixtureMeta.Teardown = $teardownParams['Definition']
+            if($teardownAst -ne $null) {
+                $teardownParams = GetParamValues $teardownAst -DefinitionOnly
+                $fixtureMeta.Teardown = $teardownParams['Definition']
+            }
 
             $useDataFixtureAst = GetCommandAsts $fixtureDefinitionAst 'UseDataFixture'
-            $useDataFixtureParams = GetParamValues $useDataFixtureAst -DefinitionOnly
-            $fixtureMeta.LazyDataObject = New-Lazy { $useDataFixtureParams['Definition'] }
+            if($useDataFixtureAst -ne $null) {
+                $useDataFixtureParams = GetParamValues $useDataFixtureAst -DefinitionOnly
+                $fixtureMeta.LazyDataObject = New-Lazy { $useDataFixtureParams['Definition'] }
+            }
 
             $factsAndTheoriesAsts = GetCommandAsts $fixtureDefinitionAst @('Fact', 'Theory')
             foreach($testAst in $factsAndTheoriesAsts) {
                 $testParams = GetParamValues $testAst
-                $testCase = [PSClassContainer]::ClassDefinitions['PoshUnit.TestCase'].New($testParams['Name'], $testParams['Definition'], $fixtureMeta)
+                $testCase = (Get-PSClass 'PoshUnit.TestCase').New($testParams['Name'], $testParams['Definition'], $fixtureMeta)
                 [Void]$fixtureMeta.Tests.Add($testCase)
             }
 

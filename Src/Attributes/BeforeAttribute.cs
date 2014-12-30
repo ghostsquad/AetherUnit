@@ -1,4 +1,4 @@
-﻿namespace PoshUnit {
+﻿namespace PondUnit.Attributes {
     using System.Management.Automation;
 
     public class BeforeAttribute : TestCustomizationAttribute {

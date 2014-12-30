@@ -6,7 +6,7 @@ function Start-TestSession {
         [Parameter(Position=0, ParameterSetName='ExistingSession')]
         [int]$SessionId,
         [Parameter(Position=0, ParameterSetName='NewSessionPath')]
-        [string]$Path = $PWD,
+        [string]$Path = ($PWD.Path),
         [switch]$Debuggable
     )
 
@@ -30,32 +30,59 @@ function Start-TestSession {
     }
 
     $poshUnitState = [PoshUnitState]::Default
-    $testNamesHashSet = New-Object System.Collections.Generic.HashSet[string]($TestNames)
+    if($PSCmdlet.ParameterSetName -eq 'NewSessionSpecific') {
+        $testNamesHashSet = New-Object System.Collections.Generic.HashSet[string]($TestNames)
+        $testFilterPredicate = {
+            param($testDisplayName)
+            $testNamesHashSet.Contains($testDisplayName)
+        }
+    } else {
+        $testFilterPredicate = { return $true }
+    }
 
     try {
         if($testSession -eq $null) {
-            $testSession = [PSClassContainer]::ClassDefinitions['PoshUnit.TestSession'].New($poshUnitState.Sessions.Count + 1)
+            $testSession = (Get-PSClass 'PoshUnit.TestSession').New($poshUnitState.Sessions.Count + 1)
         }
 
+        [Void]$poshUnitState.Sessions.Add($testSession)
         $poshUnitState.CurrentSession = $testSession
 
         if($Debuggable) {
-            $runner = [PSClassContainer]::ClassDefinitions['PoshUnit.PoshUnitDebugTestRunner'].New()
+            $runner = (Get-PSClass 'PoshUnit.PoshUnitDebugTestRunner').New()
         } else {
-            $runner = [PSClassContainer]::ClassDefinitions['PoshUnit.PoshUnitParallelTestRunner'].New()
+            $runner = (Get-PSClass 'PoshUnit.PoshUnitParallelTestRunner').New()
         }
 
-        $fixtures = Get-TestFixtures -Path $PWD
+        $fixtures = Get-TestFixtures -Path $Path
 
+        $selectedTestDictionary = New-GenericObject System.Collections.Generic.Dictionary string,object
+
+        # loop through all found fixtures
         foreach($fixture in $fixtures) {
+
+            # loop through all tests in fixture
             foreach($test in $fixture.tests) {
-                if($testNamesHashSet.Contains($test.DisplayName)) {
-                    [Void]$testSession.Tests.Add($test)
+
+                # check if test matches the filter predicate only if we need to filter
+                if(-not $PSCmdlet.ParameterSetName -eq 'NewSessionSpecific' -or $testFilterPredicate.Invoke($test.DisplayName)) {
+
+                    # add fixture to selectedTestDictionary if is not already in there
+                    if(-not $selectedTestDictionary.ContainsKey($fixture.Name)) {
+                        [Void]$selectedTestDictionary.Add($fixture.Name, (New-GenericObject System.Collections.Generic.Dictionary string,object))
+                    }
+
+                    # add the test to the fixture dictionary
+                    [Void]$selectedTestDictionary[$fixture.Name].Add($test.DisplayName, $test)
                 }
             }
         }
 
-        return $runner.RunTests($testSession.Tests)
+        $testSession.SelectedTestDictionary = $selectedTestDictionary
+
+        $runner.RunSessionTests($testSession)
+
+        return $testSession
     } finally {
         $poshUnitState.CurrentSession = $null
     }

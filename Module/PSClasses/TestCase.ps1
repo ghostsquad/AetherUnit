@@ -11,28 +11,28 @@ New-PSClass 'PoshUnit.TestCase' {
     # [System.String]
     note SkipReason
 
-    # [System.Management.Automation.ErrorRecord]
-    note ErrorRecord
+    # [System.Management.Automation.ErrorRecord[]]
+    note Errors
 
     # [PoshUnit.FailureReason]
     note FailureReason
 
     # PSClass [PoshUnit.Fixture]
-    note Fixture
+    note FixtureMeta
 
     constructor {
         param(
             [string]$DisplayName,
             [scriptblock]$Definition,
-            $Fixture
+            $FixtureMeta
         )
 
         Guard-ArgumentNotNull 'DisplayName' $DisplayName
         Guard-ArgumentNotNull 'Definition' $Definition
-        Guard-ArgumentNotNull 'Fixture' $Fixture
+        Guard-ArgumentNotNull 'FixtureMeta' $FixtureMeta
 
         $this.DisplayName = $DisplayName
         $this.Definition = $Definition
-        $this.Fixture = $Fixture
+        $this.FixtureMeta = $FixtureMeta
     }
 }

@@ -1,7 +1,7 @@
 New-PSClass 'PoshUnit.TestRunnerBase' {
-    method RunTests {
+    method RunSessionTests {
         param (
-            [object[]]$testCases
+            [object]$testSession
         )
 
         throw (New-Object System.NotImplementedException)

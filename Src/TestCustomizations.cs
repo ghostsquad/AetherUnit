@@ -1,4 +1,4 @@
-﻿namespace PoshUnit
+﻿namespace PondUnit
 {
     using System.Collections.Generic;
     using System.Management.Automation;

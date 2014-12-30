@@ -1,12 +1,12 @@
-﻿namespace PoshUnit {
+﻿namespace PondUnit {
     using System.Collections;
 
-    public interface IPoshUnitState {
+    public interface IPondUnitState {
         #region Public Properties
 
         object CurrentSession { get; set; }
 
-        SortedList Sessions { get; }
+        ArrayList Sessions { get; }
 
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿namespace PoshUnit {
+﻿namespace PondUnit.Attributes {
     public class AutoDataAttribute : DataAttribute {
     }
 }

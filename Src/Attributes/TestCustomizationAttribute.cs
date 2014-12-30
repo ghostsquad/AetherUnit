@@ -1,4 +1,4 @@
-﻿namespace PoshUnit {
+﻿namespace PondUnit.Attributes {
     using System;
     using System.Management.Automation;
 

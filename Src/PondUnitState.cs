@@ -1,27 +1,27 @@
-﻿namespace PoshUnit {
+﻿namespace PondUnit {
     using System.Collections;
 
-    public class PoshUnitState : IPoshUnitState {
+    public class PondUnitState : IPondUnitState {
         #region Static Fields
 
-        private static PoshUnitState instance;
+        private static PondUnitState instance;
 
         #endregion
 
         #region Constructors and Destructors
 
-        private PoshUnitState() {
-            this.Sessions = new SortedList();
+        private PondUnitState() {
+            this.Sessions = new ArrayList();
         }
 
         #endregion
 
         #region Public Properties
 
-        public static PoshUnitState Default {
+        public static PondUnitState Default {
             get {
                 if (instance == null) {
-                    instance = new PoshUnitState();
+                    instance = new PondUnitState();
                 }
 
                 return instance;
@@ -32,6 +32,6 @@
 
         public object CurrentSession { get; set; }
 
-        public SortedList Sessions { get; private set; }
+        public ArrayList Sessions { get; private set; }
     }
 }

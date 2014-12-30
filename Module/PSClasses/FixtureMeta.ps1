@@ -1,9 +1,9 @@
-New-PSClass 'PoshUnit.FixtureMeta' {
+New-PSClass 'PondUnit.FixtureMeta' {
     note Name
-    note Tests (New-Object System.Collections.ArrayList)
-    note Setup {}
-    note Teardown {}
-    note LazyDataObject (New-Lazy { return $null })
+    note Tests
+    note Setup
+    note Teardown
+    note LazyDataObject
 
     constructor {
         param(
@@ -13,6 +13,10 @@ New-PSClass 'PoshUnit.FixtureMeta' {
         Guard-ArgumentNotNull 'Name' $Name
 
         $this.Name = $Name
+        $this.Tests = (New-Object System.Collections.ArrayList)
+        $this.Setup = {}
+        $this.Teardown = {}
+        $this.LazyDataObject = (New-Lazy { return $null })
     }
 
     method GetDataObject {

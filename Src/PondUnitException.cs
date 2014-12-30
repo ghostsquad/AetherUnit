@@ -1,20 +1,20 @@
-﻿namespace PoshUnit {
+﻿namespace PondUnit {
     using System;
     using System.Management.Automation;
 
-    public class PoshUnitException : Exception {
+    public class PondUnitException : Exception {
         #region Constructors and Destructors
 
-        public PoshUnitException(string message)
+        public PondUnitException(string message)
             : base(message) {
         }
 
-        public PoshUnitException(string message, ErrorRecord errorRecord)
+        public PondUnitException(string message, ErrorRecord errorRecord)
             : base(message) {
             this.ErrorRecord = errorRecord;
         }
 
-        public PoshUnitException(string message, Exception inner)
+        public PondUnitException(string message, Exception inner)
             : base(message, inner) {
         }
 

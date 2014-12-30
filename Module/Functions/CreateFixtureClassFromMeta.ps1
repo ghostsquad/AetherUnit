@@ -3,22 +3,18 @@ function CreateFixtureClassFromMeta {
         $FixtureMeta
     )
 
-    Guard-ObjectIsPSClass $FixtureMeta 'PoshUnit.FixtureMeta'
+    Guard-ArgumentIsPSClass 'FixtureMeta' $FixtureMeta 'PondUnit.FixtureMeta'
 
-    $testClass = New-PSClass $FixtureMeta.Name {
-        constructor $FixtureMeta.Setup
-        foreach($test in $FixtureMeta.Tests) {
-            method $test.Name $test.Definition
-        }
+    $testClass = New-PSClass ([Guid]::NewGuid().ToString()) {} -PassThru
+    Attach-PSClassConstructor $testClass $FixtureMeta.Setup
 
-        foreach($fixtureNoteName in $FixtureMeta.FixtureNotes) {
-            note $fixtureNoteName
-        }
+    foreach($test in $FixtureMeta.Tests) {
+        Attach-PSClassMethod $testClass $test.DisplayName $test.Definition
+    }
 
-        method 'Dispose' $test.Teardown
+    Attach-PSClassMethod $testClass 'Dispose' $FixtureMeta.Teardown
 
-        note 'FixtureDataObject' $($FixtureMeta.GetDataObject())
-    }.GetNewClosure() -PassThru
+    Attach-PSClassNote $testClass 'FixtureDataObject' $FixtureMeta.GetDataObject() -forceValueAssignment
 
     return $testClass
 }

@@ -1,8 +1,8 @@
-# PoshUnit
+# PondUnit
 
 <img src="https://raw.githubusercontent.com/ghostsquad/PoshUnit/readme/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PoshUnit" align="right" />
 
-PoshUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PoshUnit stand out from the crowd:
+PondUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PondUnit stand out from the crowd:
 
 * **Test Isolation** - Tests are run in complete isolation from each other. Like in XUnit, the fixture is recreated once per test.
 * **Test Attributes** - Organize, Control, and Extend the functionality of tests using attributes
@@ -17,13 +17,13 @@ PoshUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent A
 
 ### Complementary Modules
 
-* [**PSFluentAssertions**](http://github.com/ghostsquad/PSFluentAssertions) - A PowerShell adaptation of the [.NET FluentAssertions library](http://www.fluentassertions.com/).
+* [**PondAssert**](http://github.com/ghostsquad/PondAssert) - A PowerShell adaptation of the [.NET FluentAssertions library](http://www.fluentassertions.com/).
 
-* [**PSClass & PSClassMock**](http://github.com/ghostsquad/PSClass) - Write code & test it faster, and with greater confidence.
+* [**PondClass & PondClassMock**](http://github.com/ghostsquad/PondClass) - Write code & test it faster, and with greater confidence.
 
-* [**PSMoq**](http://github.com/ghostsquad/PSMoq) - A PowerShell adaptation of the [.Net Moq library](https://github.com/Moq/moq4).
+* [**PondMoq**](http://github.com/ghostsquad/PondMoq) - A PowerShell adaptation of the [.Net Moq library](https://github.com/Moq/moq4).
 
-* [**PSAutofixture**](http://github.com/ghostsquad/PSAutoFixture) - A PowerShell adaptation of the [.Net Autofixture library](https://github.com/AutoFixture/AutoFixture).
+* [**PondAuto**](http://github.com/ghostsquad/PSAutoFixture) - A PowerShell adaptation of the [.Net Autofixture library](https://github.com/AutoFixture/AutoFixture).
 
 ### Design Notes & Restrictions
 
@@ -31,8 +31,8 @@ PoshUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent A
 
 * The script invocation information is stored in an autovariable $TestInvocationInfo. This may be needed to resolve paths to other scripts/files when the test is run.
 
-* The Fixture, Fact, and Theory methods simply define the test definition. Nothing is actually run without using Invoke-PoshUnit. This differs from popular testing framework Pester,
-but offers some powerful capabilities.
+* The methods used to define the aspects of a test fixture are simply "markers", and are never actually invoked. The PowerShell AST is used to discover and build test fixtures.
+This differs from popular testing framework Pester, but offers some powerful capabilities. _Important:_ Any code outside inside of PondUnitFixture and outside of Fact/Theory/Setup/Teardown/UseDataFixture will never run.
 
 
 ### Examples
@@ -58,10 +58,7 @@ $RepeatCustomization = New-TestCustomization {
     return ,$TestScripts
 }
 
-$o = New-Object PSObject
-$o
-
-PoshUnitFixture 'FooFixture' {
+PondUnitFixture 'FooFixture' {
     #####
     # This is how PoshUnit provides a per-fixture data object.
     # The test runner will call this scriptblock just once before the first test in this fixture is run.
@@ -160,7 +157,7 @@ PoshUnitFixture 'FooFixture' {
     }
 
     Fact 'GivenFooExpectBar' {
-        [AutoPSClassData('MyAnimalClass')]
+        [AutoPondClassData('MyAnimalClass')]
         param([psobject]$a)
     }
 
