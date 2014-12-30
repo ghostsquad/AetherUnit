@@ -1,4 +1,4 @@
-New-PSClass 'PoshUnit.TestRunnerBase' {
+New-PSClass 'PondUnit.TestRunnerBase' {
     method RunSessionTests {
         param (
             [object]$testSession

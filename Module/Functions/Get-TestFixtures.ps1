@@ -66,7 +66,7 @@ function Get-TestFixtures {
                         $CommandName,
                         $expectedType,
                         $CommandAst.Extent)
-                    throw (New-Object PoshUnitException($msg))
+                    throw (New-Object PondUnitException($msg))
                 }
 
                 $commandElementValue = $CommandAst.CommandElements[$i].Value
@@ -99,7 +99,7 @@ function Get-TestFixtures {
                     $Key,
                     $i,
                     $CommandAst.Extent)
-                throw (New-Object PoshUnitException($msg))
+                throw (New-Object PondUnitException($msg))
             }
         }
 
@@ -116,7 +116,7 @@ function Get-TestFixtures {
         $testFileAst = [System.Management.Automation.Language.Parser]::ParseFile($filesEnumerator.Current, [ref]$null, [ref]$parseErrors)
         if ($parseErrors.Length -gt 0) {
             $msg = "Parse Errors: {0}" -f ([string]::Join("`n", $parseErrors))
-            throw (New-Object PoshUnitException($msg))
+            throw (New-Object PondUnitException($msg))
         }
 
         $fixtureAsts = GetCommandAsts $testFileAst 'Fixture'
@@ -130,34 +130,34 @@ function Get-TestFixtures {
             $fixtureDefinitionAst = [System.Management.Automation.Language.Parser]::ParseInput($fixtureParams['Definition'], [ref] $Tokens, [ref] $parseErrors)
             if ($parseErrors.Length -gt 0) {
                 $msg = "Parse Errors: {0}" -f ([string]::Join("`n", $parseErrors))
-                throw (New-Object PoshUnitException($msg))
+                throw (New-Object PondUnitException($msg))
             }
 
-            $fixtureMeta = (Get-PSClass 'PoshUnit.FixtureMeta').New($fixtureName)
+            $testFixture = (Get-PSClass 'PondUnit.TestFixture').New($fixtureName)
 
             $setupAst = GetCommandAsts $fixtureDefinitionAst 'Setup'
             if($setupAst -ne $null) {
                 $setupParams = GetParamValues $setupAst -DefinitionOnly
-                $fixtureMeta.Setup = $setupParams['Definition']
+                $testFixture.Setup = $setupParams['Definition']
             }
 
             $teardownAst = GetCommandAsts $fixtureDefinitionAst 'Teardown'
             if($teardownAst -ne $null) {
                 $teardownParams = GetParamValues $teardownAst -DefinitionOnly
-                $fixtureMeta.Teardown = $teardownParams['Definition']
+                $testFixture.Teardown = $teardownParams['Definition']
             }
 
             $useDataFixtureAst = GetCommandAsts $fixtureDefinitionAst 'UseDataFixture'
             if($useDataFixtureAst -ne $null) {
                 $useDataFixtureParams = GetParamValues $useDataFixtureAst -DefinitionOnly
-                $fixtureMeta.LazyDataObject = New-Lazy { $useDataFixtureParams['Definition'] }
+                $testFixture.LazyDataObject = New-Lazy { $useDataFixtureParams['Definition'] }
             }
 
             $factsAndTheoriesAsts = GetCommandAsts $fixtureDefinitionAst @('Fact', 'Theory')
             foreach($testAst in $factsAndTheoriesAsts) {
                 $testParams = GetParamValues $testAst
-                $testCase = (Get-PSClass 'PoshUnit.TestCase').New($testParams['Name'], $testParams['Definition'], $fixtureMeta)
-                [Void]$fixtureMeta.Tests.Add($testCase)
+                $testCase = (Get-PSClass 'PondUnit.TestCase').New($testParams['Name'], $testParams['Definition'], $testFixture)
+                [Void]$testFixture.Tests.Add($testCase)
             }
 
             [Void]$fixtures.Add($fixtureMeta)

@@ -17,7 +17,7 @@ $nonStandardFunctionsToSourceAndExport = @(
     'Teardown',
     'Theory',
     'UseDataFixture',
-    'CreateFixtureClassFromMeta'
+    'CreatePSClassFromTestFixture'
 )
 foreach($func in $nonStandardFunctionsToSourceAndExport) {
     . ('{0}\Functions\{1}.ps1' -f $here, $func)
@@ -25,11 +25,11 @@ foreach($func in $nonStandardFunctionsToSourceAndExport) {
 
 $psClassesToSource = @(
     'TestCase',
-    'FixtureMeta',
+    'TestFixture',
     'TestSession',
     'TestRunnerBase',
-    'PoshUnitParallelTestRunner',
-    'PoshUnitDebugTestRunner'
+    'PondUnitParallelTestRunner',
+    'PondUnitDebugTestRunner'
 )
 
 foreach($psClassName in $psClassesToSource) {
@@ -44,8 +44,8 @@ Add-TypeAccelerator -Name CommandAst -Type ([System.Management.Automation.Langua
 Add-TypeAccelerator -Name ScriptBlockExpressionAst -Type ([System.Management.Automation.Language.ScriptBlockExpressionAst])
 Add-TypeAccelerator -Name ScriptBlockAst -Type ([System.Management.Automation.Language.ScriptBlockAst])
 
-Add-TypeAccelerator -Name PondUnitException -Type ([PoshUnit.PondUnitException])
-Add-TypeAccelerator -Name PondUnitState -Type ([PoshUnit.PondUnitState])
+Add-TypeAccelerator -Name PondUnitException -Type ([PondUnit.PondUnitException])
+Add-TypeAccelerator -Name PondUnitState -Type ([PondUnit.PondUnitState])
 
 . $here\Functions\Get-TestFixtures.ps1
 . $here\Functions\Start-TestSession.ps1

@@ -5,8 +5,4 @@ function Setup {
     )
 
     throw (New-Object System.NotImplementedException)
-
-    #$Fixture = GetParentFixture -DataType 'Setup'
-
-    #$Fixture.Setup = $Definition
 }

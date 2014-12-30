@@ -1,4 +1,4 @@
-New-PSClass 'PoshUnit.PoshUnitDebugTestRunner' -Inherit 'PoshUnit.TestRunnerBase' {
+New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase' {
 
     method RunTest {
         param(
@@ -12,12 +12,12 @@ New-PSClass 'PoshUnit.PoshUnitDebugTestRunner' -Inherit 'PoshUnit.TestRunnerBase
         $TestName = $testCase.DisplayName
 
         try {
-            $testCase.Result = [PoshUnit.TestResult]::InProgress
+            $testCase.Result = [PondUnit.TestResult]::InProgress
             [Void]$testFixture.$TestName.Invoke()
-            $testCase.Result = [PoshUnit.TestResult]::Success
+            $testCase.Result = [PondUnit.TestResult]::Success
         } catch {
             write-host 'test failed' -foregroundcolor yellow
-            $testCase.Result = [PoshUnit.TestResult]::Failed
+            $testCase.Result = [PondUnit.TestResult]::Failed
             $testCase.Errors += $_
         }
     }
@@ -51,7 +51,7 @@ New-PSClass 'PoshUnit.PoshUnitDebugTestRunner' -Inherit 'PoshUnit.TestRunnerBase
                     $initError = $_
                     foreach($testCase in $testCases) {
                         write-host 'init failed on test class' -foregroundcolor yellow
-                        $testCase.Result = [PoshUnit.TestResult]::Failed
+                        $testCase.Result = [PondUnit.TestResult]::Failed
                         $testCase.Errors += $initError
                     }
                 }
@@ -65,7 +65,7 @@ New-PSClass 'PoshUnit.PoshUnitDebugTestRunner' -Inherit 'PoshUnit.TestRunnerBase
                         # do not run any further tests, just mark them as failed and record the error
                         if($creationTried -and -not $creationSuccessful) {
                             write-host 'creation failed on prior test' -foregroundcolor yellow
-                            $testCase.Result = [PoshUnit.TestResult]::Failed
+                            $testCase.Result = [PondUnit.TestResult]::Failed
                             $testCase.Errors += $creationError
                             continue;
                         }
@@ -85,7 +85,7 @@ New-PSClass 'PoshUnit.PoshUnitDebugTestRunner' -Inherit 'PoshUnit.TestRunnerBase
                             # if creationSuccess is not be marked true, we will be skipping subsequent tests
                             # we need to keep the error that occurred though and append it to subsequent testCases
                             write-host 'setup or teardown failed' -foregroundcolor yellow
-                            $testCase.Result = [PoshUnit.TestResult]::Failed
+                            $testCase.Result = [PondUnit.TestResult]::Failed
                             $errorRecord = $_
                             $testCase.Errors += $errorRecord
                             if(-not $creationSuccessful) {

@@ -3,8 +3,8 @@
 # 2. To avoid cluttering the module scope with the splat variable
 function Create-FailureReasonEnum {
     $FailureReasonEnumParams = @{
-        ModuleBuilder = $PoshUnitModuleBuilder
-        Name = 'PoshUnit.FailureReason'
+        ModuleBuilder = $PondUnitModuleBuilder
+        Name = 'PondUnit.FailureReason'
         Members = @{
             None = 0
             InitializationException = 1

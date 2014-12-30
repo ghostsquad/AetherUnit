@@ -1,4 +1,4 @@
-function CreateFixtureClassFromMeta {
+function CreatePSClassFromTestFixture {
     param(
         $FixtureMeta
     )

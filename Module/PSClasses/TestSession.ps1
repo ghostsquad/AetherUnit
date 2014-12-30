@@ -1,4 +1,4 @@
-New-PSClass 'PoshUnit.TestSession' {
+New-PSClass 'PondUnit.TestSession' {
     note SessionId
 
     note SelectedTestDictionary
@@ -22,7 +22,7 @@ New-PSClass 'PoshUnit.TestSession' {
             $TestRunSummary
         )
 
-        Guard-ArgumentIsPSClass 'TestRunSummary' $TestRunSummary 'PoshUnit.TestRunSummary'
+        Guard-ArgumentIsPSClass 'TestRunSummary' $TestRunSummary 'PondUnit.TestRunSummary'
 
         $this.Total += $TestRunSummary.Total
         $this.Failed += $TestRunSummary.Failed

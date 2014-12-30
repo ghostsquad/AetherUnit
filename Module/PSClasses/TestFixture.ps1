@@ -1,4 +1,4 @@
-New-PSClass 'PondUnit.FixtureMeta' {
+New-PSClass 'PondUnit.TestFixture' {
     note Name
     note Tests
     note Setup

@@ -29,7 +29,7 @@ function Start-TestSession {
         $tests = Get-Tests -Path $Path
     }
 
-    $poshUnitState = [PoshUnitState]::Default
+    $pondUnitState = [PondUnitState]::Default
     if($PSCmdlet.ParameterSetName -eq 'NewSessionSpecific') {
         $testNamesHashSet = New-Object System.Collections.Generic.HashSet[string]($TestNames)
         $testFilterPredicate = {
@@ -42,16 +42,16 @@ function Start-TestSession {
 
     try {
         if($testSession -eq $null) {
-            $testSession = (Get-PSClass 'PoshUnit.TestSession').New($poshUnitState.Sessions.Count + 1)
+            $testSession = (Get-PSClass 'PondUnit.TestSession').New($pondUnitState.Sessions.Count + 1)
         }
 
-        [Void]$poshUnitState.Sessions.Add($testSession)
-        $poshUnitState.CurrentSession = $testSession
+        [Void]$pondUnitState.Sessions.Add($testSession)
+        $pondUnitState.CurrentSession = $testSession
 
         if($Debuggable) {
-            $runner = (Get-PSClass 'PoshUnit.PoshUnitDebugTestRunner').New()
+            $runner = (Get-PSClass 'PondUnit.PondUnitDebugTestRunner').New()
         } else {
-            $runner = (Get-PSClass 'PoshUnit.PoshUnitParallelTestRunner').New()
+            $runner = (Get-PSClass 'PondUnit.PondUnitParallelTestRunner').New()
         }
 
         $fixtures = Get-TestFixtures -Path $Path
@@ -84,6 +84,6 @@ function Start-TestSession {
 
         return $testSession
     } finally {
-        $poshUnitState.CurrentSession = $null
+        $pondUnitState.CurrentSession = $null
     }
 }

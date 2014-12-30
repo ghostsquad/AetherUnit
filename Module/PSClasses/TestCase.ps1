@@ -1,12 +1,12 @@
-New-PSClass 'PoshUnit.TestCase' {
+New-PSClass 'PondUnit.TestCase' {
     # [System.String]
     note DisplayName
 
     # [System.Management.Automation.ScriptBlock]
     note Definition
 
-    # [PoshUnit.TestResult]
-    note Result ([PoshUnit.TestResult]::NotRun)
+    # [PondUnit.TestResult]
+    note Result ([PondUnit.TestResult]::NotRun)
 
     # [System.String]
     note SkipReason
@@ -14,10 +14,10 @@ New-PSClass 'PoshUnit.TestCase' {
     # [System.Management.Automation.ErrorRecord[]]
     note Errors
 
-    # [PoshUnit.FailureReason]
+    # [PondUnit.FailureReason]
     note FailureReason
 
-    # PSClass [PoshUnit.Fixture]
+    # PSClass [PondUnit.Fixture]
     note FixtureMeta
 
     constructor {

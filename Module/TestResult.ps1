@@ -3,8 +3,8 @@
 # 2. To avoid cluttering the module scope with the splat variable
 function Create-TestResultEnum {
     $TestResultEnumParams = @{
-        ModuleBuilder = $PoshUnitModuleBuilder
-        Name = 'PoshUnit.TestResult'
+        ModuleBuilder = $PondUnitModuleBuilder
+        Name = 'PondUnit.TestResult'
         Members = @{
             NotRun = 0
             Success = 1

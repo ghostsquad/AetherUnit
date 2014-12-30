@@ -1,6 +1,8 @@
 # PondUnit
 
-<img src="https://raw.githubusercontent.com/ghostsquad/PondUnit/master/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PondUnit" align="right" />
+<img src="https://raw.githubusercontent.com/ghostsquad/PondUnit/master/Content/PondUnitLogo.png" alt="PondUnit Logo" title="PondUnit" align="right" />
+
+Pond - **PO**wershell .**N**et **D**evelopment
 
 PondUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PondUnit stand out from the crowd:
 
@@ -60,7 +62,7 @@ $RepeatCustomization = New-TestCustomization {
 
 PondUnitFixture 'FooFixture' {
     #####
-    # This is how PoshUnit provides a per-fixture data object.
+    # This is how PondUnit provides a per-fixture data object.
     # The test runner will call this scriptblock just once before the first test in this fixture is run.
     # The object returned will have a lifetime tied to the all the tests in this fixture.
     # In other words, it will only be disposed when all tests within this test fixture have run.

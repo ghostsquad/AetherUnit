@@ -6,8 +6,4 @@ function Fact {
     )
 
     throw (New-Object System.NotImplementedException)
-
-    #$Fixture = GetParentFixture -DataType 'Fact'
-
-    #AddTestObjectToState $Fixture $Name $Definition
 }
