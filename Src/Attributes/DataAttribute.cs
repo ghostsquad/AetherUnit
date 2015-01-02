@@ -1,4 +1,4 @@
-﻿namespace PondUnit.Attributes {
+﻿namespace GpUnit.Attributes {
     using System;
 
     public class DataAttribute : Attribute {

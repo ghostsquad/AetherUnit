@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PondUnit", "PondUnit.csproj", "{6056E542-7C22-45D2-B3B4-77DB3ED90F9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpUnit", "GpUnit.csproj", "{6056E542-7C22-45D2-B3B4-77DB3ED90F9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

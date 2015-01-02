@@ -1,4 +1,4 @@
-New-PSClass 'PondUnit.TestSession' {
+New-PSClass 'GpUnit.TestSession' {
     note SessionId
 
     note SelectedTestDictionary
@@ -8,13 +8,22 @@ New-PSClass 'PondUnit.TestSession' {
     note Skipped
     note Time
 
+    note Runner
+
     constructor {
         param(
             [int]$SessionId
+            $Runner
         )
 
-        $this.SelectedTestDictionary = @{}
         $this.SessionId = $SessionId
+        Guard-ArgumentIsPSClass 'Runner' $Runner 'GpUnit.TestRunnerBase'
+
+        $this.SelectedTestDictionary = @{}
+    }
+
+    method Run {
+        return $this.Runner.RunSessionTests($this.SelectedTestDictionary)
     }
 
     method Aggregate {
@@ -22,7 +31,7 @@ New-PSClass 'PondUnit.TestSession' {
             $TestRunSummary
         )
 
-        Guard-ArgumentIsPSClass 'TestRunSummary' $TestRunSummary 'PondUnit.TestRunSummary'
+        Guard-ArgumentIsPSClass 'TestRunSummary' $TestRunSummary 'GpUnit.TestRunSummary'
 
         $this.Total += $TestRunSummary.Total
         $this.Failed += $TestRunSummary.Failed

@@ -1,38 +1,34 @@
-New-PSClass 'PondUnit.TestCase' {
+New-PSClass 'GpUnit.TestCase' {
     # [System.String]
     note DisplayName
 
-    # [System.Management.Automation.ScriptBlock]
-    note Definition
+    # [GpUnit.TestDefinition]
+    note TestDefinition
 
-    # [PondUnit.TestResult]
-    note Result ([PondUnit.TestResult]::NotRun)
-
-    # [System.String]
-    note SkipReason
+    # [GpUnit.TestResult]
+    note Result ([GpUnit.TestResult]::NotRun)
 
     # [System.Management.Automation.ErrorRecord[]]
     note Errors
 
-    # [PondUnit.FailureReason]
+    # [GpUnit.FailureReason]
     note FailureReason
 
-    # PSClass [PondUnit.Fixture]
-    note TestFixture
+    # [GpUnit.DataAttribute]
+    note DataAttribute
 
     constructor {
         param(
             [string]$DisplayName,
-            [scriptblock]$Definition,
-            $TestFixture
+            $TestDefinition,
+            [GpUnit.DataAttribute]$DataAttribute
         )
 
         Guard-ArgumentNotNull 'DisplayName' $DisplayName
-        Guard-ArgumentNotNull 'Definition' $Definition
-        Guard-ArgumentIsPSClass 'TestFixture' $TestFixture 'PondUnit.TestFixture'
+        Guard-ArgumentIsPSClass 'TestDefinition' $TestDefinition 'GpUnit.TestDefinition'
 
         $this.DisplayName = $DisplayName
-        $this.Definition = $Definition
-        $this.TestFixture = $TestFixture
+        $this.TestDefinition = $TestDefinition
+        $this.Errors = New-Object System.Collections.ArrayList
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace PondUnit.Attributes {
+﻿namespace GpUnit.Attributes {
     using System.Management.Automation;
 
     public class AfterAttribute : TestCustomizationAttribute {

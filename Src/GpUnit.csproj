@@ -7,8 +7,8 @@
     <ProjectGuid>{6056E542-7C22-45D2-B3B4-77DB3ED90F9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PondUnit</RootNamespace>
-    <AssemblyName>PondUnit</AssemblyName>
+    <RootNamespace>GpUnit</RootNamespace>
+    <AssemblyName>GpUnit</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -47,9 +47,10 @@
     <Compile Include="Attributes\AutoDataAttribute.cs" />
     <Compile Include="Attributes\AutoPSClassDataAttribute.cs" />
     <Compile Include="Attributes\BeforeAttribute.cs" />
-    <Compile Include="PondUnitException.cs" />
-    <Compile Include="IPondUnitState.cs" />
-    <Compile Include="PondUnitState.cs" />
+    <Compile Include="FailureReason.cs" />
+    <Compile Include="GpUnitException.cs" />
+    <Compile Include="IGpunitState.cs" />
+    <Compile Include="GpUnitState.cs" />
     <Compile Include="TestCustomizations.cs" />
     <Compile Include="Attributes\DataAttribute.cs" />
     <Compile Include="Attributes\InlineDataAttribute.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Attributes\TimeoutAttribute.cs" />
     <Compile Include="Attributes\TraitAttribute.cs" />
     <Compile Include="Attributes\VariableDataSourceAttribute.cs" />
+    <Compile Include="TestResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

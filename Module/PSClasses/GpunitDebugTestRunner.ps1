@@ -1,4 +1,4 @@
-New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase' {
+New-PSClass 'GpUnit.GpUnitDebugTestRunner' -Inherit 'GpUnit.TestRunnerBase' {
 
     method RunTest {
         param(
@@ -12,12 +12,12 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
         $private:testName = $testCase.DisplayName
 
         try {
-            $testCase.Result = [PondUnit.TestResult]::InProgress
+            $testCase.Result = [GpUnit.TestResult]::InProgress
             [Void]$testFixture.$testName.Invoke()
-            $testCase.Result = [PondUnit.TestResult]::Success
+            $testCase.Result = [GpUnit.TestResult]::Success
         } catch {
             write-host 'test failed' -foregroundcolor yellow
-            $testCase.Result = [PondUnit.TestResult]::Failed
+            $testCase.Result = [GpUnit.TestResult]::Failed
             $testCase.Errors += $_
         }
     }
@@ -43,7 +43,7 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
                     # since all test cases share the same TestFixture object, we can just pick the first one
                     # and create the test fixture class (psclass) using the TestFixture property of the testCase
                     $firstTestCase = [System.Linq.Enumerable]::First($testCases)
-                    $fixtureClass = CreatePSClassFromTestFixture $firstTestCase.TestFixture
+                    $fixtureClass = New-PSClassFromTestFixture $firstTestCase.TestFixture
                     $initSuccessful = $true
                 } catch {
                     # if we are unable to create the testClass, mark all tests as failed
@@ -51,7 +51,7 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
                     $initError = $_
                     foreach($testCase in $testCases) {
                         write-host 'init failed on test class' -foregroundcolor yellow
-                        $testCase.Result = [PondUnit.TestResult]::Failed
+                        $testCase.Result = [GpUnit.TestResult]::Failed
                         $testCase.Errors += $initError
                     }
                 }
@@ -85,7 +85,7 @@ New-PSClass 'PondUnit.PondUnitDebugTestRunner' -Inherit 'PondUnit.TestRunnerBase
                             # if creationSuccess is not be marked true, we will be skipping subsequent tests
                             # we need to keep the error that occurred though and append it to subsequent testCases
                             write-host 'setup or teardown failed' -foregroundcolor yellow
-                            $testCase.Result = [PondUnit.TestResult]::Failed
+                            $testCase.Result = [GpUnit.TestResult]::Failed
                             $errorRecord = $_
                             $testCase.Errors += $errorRecord
                             if(-not $creationSuccessful) {

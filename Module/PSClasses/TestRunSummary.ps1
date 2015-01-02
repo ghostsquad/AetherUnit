@@ -1,3 +1,3 @@
-New-PSClass 'PondUnit.TestRunSummary' {
+New-PSClass 'GpUnit.TestRunSummary' {
 
 }

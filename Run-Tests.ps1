@@ -10,10 +10,4 @@ if($Debug){
 
 $here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
-if($currentContext) {
-    Import-Module Pester
-    Invoke-Pester -TestName $TestName -Path $here
-} else {
-    $cmd = 'Set-Location ''{0}''; Import-Module PondUnit; Invoke-Pester -TestName ''{1}'' -EnableExit;' -f $here, $TestName
-    powershell.exe -noprofile -command $cmd
-}
+New-TestSession -Path ($here\Tests) -Debuggable:$currentContext

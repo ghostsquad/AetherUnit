@@ -1,16 +1,17 @@
-﻿namespace PondUnit {
+﻿namespace GpUnit {
     using System.Collections;
 
-    public class PondUnitState : IPondUnitState {
+    public class GpUnitState : IGpunitState {
         #region Static Fields
 
-        private static PondUnitState instance;
+        private static GpUnitState instance;
 
         #endregion
 
         #region Constructors and Destructors
 
-        private PondUnitState() {
+        private GpUnitState()
+        {
             this.Sessions = new ArrayList();
         }
 
@@ -18,10 +19,11 @@
 
         #region Public Properties
 
-        public static PondUnitState Default {
+        public static GpUnitState Default
+        {
             get {
                 if (instance == null) {
-                    instance = new PondUnitState();
+                    instance = new GpUnitState();
                 }
 
                 return instance;

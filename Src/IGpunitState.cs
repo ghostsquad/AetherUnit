@@ -1,7 +1,7 @@
-﻿namespace PondUnit {
+﻿namespace GpUnit {
     using System.Collections;
 
-    public interface IPondUnitState {
+    public interface IGpunitState {
         #region Public Properties
 
         object CurrentSession { get; set; }

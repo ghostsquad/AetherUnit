@@ -1,4 +1,4 @@
-﻿namespace PondUnit.Attributes {
+﻿namespace GpUnit.Attributes {
     public class InlineDataAttribute : DataAttribute {
         #region Constructors and Destructors
 
