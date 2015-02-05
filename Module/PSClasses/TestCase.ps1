@@ -14,14 +14,17 @@ New-PSClass 'GpUnit.TestCase' {
     # [GpUnit.FailureReason]
     note FailureReason
 
-    # [GpUnit.DataAttribute]
+    # [GpUnit.Attributes.DataAttribute]
     note DataAttribute
+
+    # [System.Double]
+    note Time 0
 
     constructor {
         param(
             [string]$DisplayName,
             $TestDefinition,
-            [GpUnit.DataAttribute]$DataAttribute
+            [GpUnit.Attributes.DataAttribute]$DataAttribute
         )
 
         Guard-ArgumentNotNull 'DisplayName' $DisplayName

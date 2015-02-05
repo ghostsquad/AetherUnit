@@ -3,7 +3,7 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
     #region Singleton Code
     note -static '_instance'
 
-    property -static 'Default' {
+    property -static 'Default' -get {
         if ($this._instance -eq $null) {
             $this._instance = (Get-PSClass 'GpUnit.GpUnitFixtureDiscoverer').New()
         }
@@ -37,8 +37,8 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
             $definitionOnlyMapping = $this._NewParamNameAstTypeDictionary($false, $true)
 
             foreach($fixtureAst in $fixtureAsts) {
-                $fixtureName = $fixtureAst.CommandElements[0].Value
-                $fixtureParams = $this._GetCommandParameterValues $fixtureAst
+                $fixtureName = $fixtureAst.CommandElements[1].Value
+                $fixtureParams = $this._GetCommandParameterValues($fixtureAst, $nameAndDefinitionMapping)
 
                 $parseErrors = $null
                 $Tokens = $null
@@ -48,13 +48,13 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
                     throw (New-Object GpUnitException($msg))
                 }
 
-                $testFixture = (Get-PSClass 'gpUnit.TestFixture').New($fixtureName, $fixtureFilePath)
+                $testFixture = (Get-PSClass 'GpUnit.TestFixture').New($fixtureName, $fixtureFilePath)
 
                 #region FixtureAsts
                 $setupAsts = $this._GetCommandAsts($fixtureDefinitionAst, @('Setup','Constructor'))
                 if($setupAsts.Count -gt 1) {
                     $msg = "Parse Errors: Found multiple setup/constructor methods (which are synonymous). Only 1 is allowed."
-                    throw (New-Object GpUnitException($msg)
+                    throw (New-Object GpUnitException($msg))
                 } elseif($setupAsts.Count -eq 1) {
                     $setupParams = $this._GetCommandParameterValues($setupAsts[0], $definitionOnlyMapping)
                     $testFixture.Teardown = $setupParams['Definition']
@@ -81,15 +81,15 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
                 $factsAsts = $this._GetCommandAsts($fixtureDefinitionAst, 'Fact')
                 foreach($ast in $factsAsts) {
                     $testParams = $this._GetCommandParameterValues($ast, $nameAndDefinitionMapping)
-                    $testCase = (Get-PSClass 'PondUnit.TestCase').New($testParams['Name'], $testParams['Definition'], $testFixture)
-                    [Void]$testFixture.Tests.Add($testCase)
+                    $testDefinition = (Get-PSClass 'GpUnit.TestDefinition').New($testParams['Name'], $testParams['Definition'], $testFixture)
+                    [Void]$testFixture.TestDefinitions.Add($testDefinition)
                 }
 
                 $theriesAsts = $this._GetCommandAsts($fixtureDefinitionAst, 'Theory')
                 foreach($ast in $theriesAsts) {
                     $testParams = $this._GetCommandParameterValues($ast, $nameAndDefinitionMapping)
-                    $testCase = (Get-PSClass 'PondUnit.TestCase').New($testParams['Name'], $testParams['Definition'], $testFixture)
-                    [Void]$testFixture.Tests.Add($testCase)
+                    $testDefinition = (Get-PSClass 'GpUnit.TestDefinition').New($testParams['Name'], $testParams['Definition'], $testFixture, $true)
+                    [Void]$testFixture.TestDefinitions.Add($testDefinition)
                 }
                 #endregion FixtureAsts
 
@@ -124,11 +124,17 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
                 }
                 #endregion PSClassNatives
 
+                $testFixture.UpdateTestTotal()
+
                 [Void]$fixtures.Add($testFixture)
             }
         }
 
-        return ,$fixtures
+        if($fixtures.Count -le 1) {
+            return ,$fixtures
+        }
+
+        return $fixtures
     }
 
     method '_GetCommandAsts' {
@@ -150,7 +156,13 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
 
         $predicate = New-Closure @newClosureParams
 
-        return ,$ScriptBlockAst.FindAll($predicate, $true)
+        $asts = $ScriptBlockAst.FindAll($predicate, $true)
+
+        if($asts.Count -le 1) {
+            return ,$asts
+        }
+
+        return $asts
     }
 
     method '_GetCommandParameterValues' {
@@ -178,7 +190,7 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
                         $CommandName,
                         $expectedType,
                         $CommandAst.Extent)
-                    throw (New-Object PondUnitException($msg))
+                    throw (New-Object GpUnitException($msg))
                 }
 
                 $commandElementValue = $CommandAst.CommandElements[$i].Value
@@ -211,7 +223,7 @@ New-PSClass 'GpUnit.GpUnitFixtureDiscoverer' -Inherit 'GpUnit.FixtureDiscovererB
                     $Key,
                     $i,
                     $CommandAst.Extent)
-                throw (New-Object PondUnitException($msg))
+                throw (New-Object GpUnitException($msg))
             }
         }
 

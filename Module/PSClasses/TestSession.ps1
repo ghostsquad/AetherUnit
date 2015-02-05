@@ -1,32 +1,32 @@
 New-PSClass 'GpUnit.TestSession' {
+    # [int]
     note SessionId
 
-    note SelectedTestDictionary
+    # ArrayList of PSClass [GpUnit.TestCase]
+    note Tests
 
+    # [int]
     note Total
-    note Failed
-    note Skipped
-    note Time
 
-    note Runner
+    # [int]
+    note Failed
+
+    # [int]
+    note Skipped
+
+    # [double]
+    note Time
 
     constructor {
         param(
             [int]$SessionId
-            $Runner
         )
 
         $this.SessionId = $SessionId
-        Guard-ArgumentIsPSClass 'Runner' $Runner 'GpUnit.TestRunnerBase'
-
-        $this.SelectedTestDictionary = @{}
+        $this.Tests = New-Object System.Collections.ArrayList
     }
 
-    method Run {
-        return $this.Runner.RunSessionTests($this.SelectedTestDictionary)
-    }
-
-    method Aggregate {
+    method _Aggregate {
         param (
             $TestRunSummary
         )

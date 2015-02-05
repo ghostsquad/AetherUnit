@@ -1,16 +1,16 @@
-function Create-PSClassFromTestFixture {
+function New-PSClassFromTestFixture {
     param(
         $TestFixture
     )
 
-    Guard-ArgumentIsPSClass 'TestFixture' $TestFixture 'PondUnit.TestFixture'
+    Guard-ArgumentIsPSClass -ArgumentName 'TestFixture' -InputObject $TestFixture -PSClassName 'GpUnit.TestFixture'
 
     $testClass = New-PSClass ([Guid]::NewGuid().ToString()) {} -PassThru
 
     Attach-PSClassConstructor $testClass $TestFixture.Setup
 
-    foreach($test in $TestFixture.Tests) {
-        Attach-PSClassMethod -Class $testClass -Name $test.DisplayName -Script $test.Definition
+    foreach($testDefinition in $TestFixture.TestDefinitions) {
+        Attach-PSClassMethod -Class $testClass -Name $testDefinition.DisplayName -Script $testDefinition.Script
     }
 
     foreach($method in $TestFixture.Methods) {
@@ -42,7 +42,7 @@ function Create-PSClassFromTestFixture {
 
     Attach-PSClassNote $testClass 'FixtureDataObject' $TestFixture.GetDataObject() -forceValueAssignment
 
-    $TestInvocationInfo = (Get-PSClass 'PondUnit.TestInvocationInfo').New($TestFixture.FilePath)
+    $TestInvocationInfo = (Get-PSClass 'GpUnit.TestInvocationInfo').New($TestFixture.FilePath)
 
     Attach-PSClassNote $testClass 'TestInvocationInfo' $TestInvocationInfo -forceValueAssignment
 
