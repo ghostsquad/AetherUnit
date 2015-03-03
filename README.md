@@ -1,8 +1,8 @@
-# PoshUnit
+# AetherUnit
 
-<img src="https://raw.githubusercontent.com/ghostsquad/PoshUnit/readme/Content/PoshUnitLogo.png" alt="PoshUnit Logo" title="PoshUnit" align="right" />
+<img src="https://raw.githubusercontent.com/ghostsquad/AetherUnit/readme/Content/PoshUnitLogo.png" alt="AetherUnit Logo" title="AetherUnit" align="right" />
 
-PoshUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PoshUnit stand out from the crowd:
+AetherUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PoshUnit stand out from the crowd:
 
 1. **Test Isolation** - Tests are run in complete isolation from each other. Like in XUnit, the fixture is recreated once per test. 
 2. **Setup and Teardown** - Although normally, I would agree that setup/teardown methods make the code harder to understand, if done correctly, it can save a lot of time and keep code DRY. XUnit states that the constructor/dispose methods of the test class can be used like setup/teardown.
