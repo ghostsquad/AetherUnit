@@ -1,8 +1,8 @@
 # AetherUnit
 
-<img src="https://raw.githubusercontent.com/ghostsquad/AetherUnit/readme/Content/PoshUnitLogo.png" alt="AetherUnit Logo" title="AetherUnit" align="right" />
+<img src="https://raw.githubusercontent.com/ghostsquad/AetherUnit/master/Content/PoshUnitLogo.png" alt="AetherUnit Logo" title="AetherUnit" align="right" />
 
-AetherUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make PoshUnit stand out from the crowd:
+AetherUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent Assertions, Moq, and Autofixture is an amazing experience. I wanted to bring that to Powershell. Here are the core concepts that make AetherUnit stand out from the crowd:
 
 1. **Test Isolation** - Tests are run in complete isolation from each other. Like in XUnit, the fixture is recreated once per test. 
 2. **Setup and Teardown** - Although normally, I would agree that setup/teardown methods make the code harder to understand, if done correctly, it can save a lot of time and keep code DRY. XUnit states that the constructor/dispose methods of the test class can be used like setup/teardown.
@@ -15,5 +15,5 @@ AetherUnit is a Powershell unit test framework. Testing in C# with XUnit, Fluent
 6. **Tab Expansion** - Built-In tab expansion for finding tests by name/attribute
 7. **Clear, Consistent Naming** - Built-In support for BDD naming syntax.
 8. **Clean, Detailed Output** - result, runtime, standard output, trace, etc. Data is stored in a global variable to use/analyze as needed, as well as to the console and results JSON file.
-9. **Mocking DI Style** - Pester, PSUnit and others have focused on allowing developers to mock out function calls, like Get-ChildItem within the SUT (System under test). This seems like a good idea at first, but quickly, you'll realize that you have no guarantee that when you run your test, you will call the actual function or the mocked function, or if that function is even being used anymore. You end up breaking the first rule of testing, which is that you should not know about implementation details. Implementation details may change, but thes tests shouldn't (as long as the behavior remains the same).
+9. **Mocking DI Style** - Pester, PSUnit and others have focused on allowing developers to mock out function calls, like Get-ChildItem within the system under test. This seems like a good idea at first, but quickly, you'll realize that you have no guarantee that when you run your test, you will call the actual function or the mocked function, or if that function is even being used anymore. You end up breaking the first rule of testing, which is that you should not know about implementation details. Implementation details may change, but the tests shouldn't (as long as the behavior remains the same).
 10. **AutoMockTestable Pattern** - Don't inject dependencies that aren't related to your test. Let the AutoMock container handle that!
